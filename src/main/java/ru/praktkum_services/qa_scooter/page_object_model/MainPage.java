@@ -2,6 +2,7 @@ package ru.praktkum_services.qa_scooter.page_object_model;
 
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -20,6 +21,11 @@ public class MainPage {
         this.driver = driver;
     }
 
+    public void scrollToElementByClassName(String className) {
+        WebElement element = driver.findElement(By.className(className));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView();", element);
+    }
+
     public void clickImportantQuestionElement(int index) {
 
         try {
@@ -29,13 +35,13 @@ public class MainPage {
             System.out.println("Неверный индекс элемента" + e.getMessage());
         }
     }
+
     public String getImportantAnswerElementTexting(int index) {
         String answer = null;
         WebElement element = driver.findElements(importantAnswer).get(index);
         try {
             clickImportantQuestionElement(index);
-            new WebDriverWait(driver, Duration.ofSeconds(3))
-                    .until(ExpectedConditions.visibilityOfElementLocated((By) element));
+            new WebDriverWait(driver, Duration.ofSeconds(3)).until(ExpectedConditions.visibilityOf(element));
             answer = driver.findElements(importantAnswer).get(index).getText();
         } catch (IndexOutOfBoundsException e) {
             System.out.println("Неверный индекс элемента" + e.getMessage());
