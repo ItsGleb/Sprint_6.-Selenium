@@ -10,9 +10,10 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import ru.praktkum_services.qa_scooter.page_object_model.MainPage;
+import ru.praktkum_services.qa_scooter.page_object_model.OrderPage;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static ru.praktkum_services.qa_scooter.constants.Constants.URL;
+import static org.junit.jupiter.api.Assertions.*;
+import static ru.praktkum_services.qa_scooter.constants.Constants.MAIN_PAGE_URL;
 
 public class MainPageTests {
     private WebDriver driver;
@@ -21,7 +22,7 @@ public class MainPageTests {
     public void setup() {
         WebDriverManager.chromedriver().setup();
         driver = new ChromeDriver();
-        driver.get(URL); // Открыли браузер
+        driver.get(MAIN_PAGE_URL); // Открыли браузер
         driver.findElement(By.id("rcc-confirm-button")).click(); // Закрываем согласие с куками
     }
     @ParameterizedTest
@@ -34,13 +35,30 @@ public class MainPageTests {
             "4| Пока что нет! Но если что-то срочное — всегда можно позвонить в поддержку по красивому номеру 1010.",
             "5| Самокат приезжает к вам с полной зарядкой. Этого хватает на восемь суток — даже если будете кататься без передышек и во сне. Зарядка не понадобится.",
             "6| Да, пока самокат не привезли. Штрафа не будет, объяснительной записки тоже не попросим. Все же свои.",
-            "7| Да, обязательно. Всем самокатов! И Москве, и Московской области."
+            "7| Да, обязательно. Всем самокатов! И Москве, и Московской области.",
+
     }, delimiter = '|')
     public void checkImportantAnswer(int index, String texting) {
         MainPage objMainPage = new MainPage(driver);
-        objMainPage.scrollToElementByClassName("Home_FourPart__1uthg");
+        objMainPage.scrollToElementByCssSelector(".Home_FourPart__1uthg");
         assertEquals(texting,objMainPage.getImportantAnswerElementTexting(index),"Текстовка неправильная");
 
+    }
+    // Проверка точки входа в сценарий заказа самоката по кнопке в заголовке
+    @Test
+    public void checkingTheOrderButtonInTheHeader(){
+        MainPage objMainPage = new MainPage(driver);
+        OrderPage objOrderPage = new OrderPage(driver);
+        objMainPage.clickTheOrderButtonInTheHeader();
+        assertTrue(objOrderPage.isScooterOrderFormAvailable(),"Форма заказа не отобразилась");
+    }
+
+    @Test
+    public void checkingOrderButtonAtTheBottomOfThePage(){
+        MainPage objMainPage = new MainPage(driver);
+        OrderPage objOrderPage = new OrderPage(driver);
+        objMainPage.theOrderButtonAtTheBottomOfThePage();
+        assertTrue(objOrderPage.isScooterOrderFormAvailable(),"Форма заказа не отобразилась");
     }
 
 
